@@ -1,160 +1,166 @@
-# TEMPORÁRIO — M0-T01 Environment Discovery
+# TEMPORARY — M0-T01 Environment Discovery
 
-Este relatório é temporário e será consolidado na M0-T11. Foi produzido em 2026-10-02, somente com comandos de leitura local e consulta a documentação oficial. Nenhuma instalação, alteração de feature, login de registry, download de imagem ou container foi realizado nesta task.
+This report is temporary and will be consolidated in M0-T11. It was produced on 2026-10-02 using only local read-only commands and official documentation. No installation, feature change, registry login, image download or container operation was performed in this task.
 
-## 1. Resumo do ambiente
+## 1. Environment summary
 
-### Sistema, hardware e caminho
+### System, hardware and path
 
 - Windows 11 Home Single Language, 64-bit, build 26200.
-- PowerShell 7.6.5 e Windows PowerShell 5.1 disponíveis; Bash, WSL e CMD também disponíveis.
-- Intel Core i5-12500H, 12 cores e 16 threads.
-- RAM total de 15,69 GB; aproximadamente 2,60 GB livres durante a medição.
-- Unidade C: NTFS, SSD NVMe, aproximadamente 126 GB livres na validação final.
-- O caminho confirmado pelo Product Owner é `<PROJECT_PATH>`; a pasta existe, estava vazia, não tinha `.git`, não contém espaços nem caracteres não ASCII e não apresentou marcador local conhecido de sincronização. O caminho tem comprimento curto e não há sinal de filesystem inadequado. A confirmação efetiva de permissões ocorrerá pelo próprio `git init` e pelo commit desta task.
+- PowerShell 7.6.5 and Windows PowerShell 5.1 available; Bash, WSL and CMD also available.
+- Intel Core i5-12500H, 12 cores and 16 threads.
+- 15.69 GB total RAM; approximately 2.60 GB free during measurement.
+- C: drive is NTFS on an NVMe SSD, with approximately 126 GB free during final validation.
+- The path confirmed by the Product Owner is `<PROJECT_PATH>`; the folder existed, was empty, had no `.git`, contained no spaces or non-ASCII characters, and showed no known local synchronization marker. The path is short and there is no indication of an unsuitable filesystem. Effective write permission was confirmed by `git init` and the commit for this task.
 
-### Virtualização e WSL
+### Virtualization and WSL
 
-- WSL está instalado e reporta versão 2.7.3, com kernel WSL2 ativo.
-- A única distribuição reportada foi `docker-desktop`, parada, em WSL2.
-- O hypervisor foi detectado como presente, mas a consulta WMI também retornou a flag de virtualização no firmware como desabilitada. O resultado é conflitante e pode ser falso negativo.
-- A consulta das features opcionais do Windows não foi concluída: DISM respondeu com erro 740, exigindo elevação. Nenhuma elevação foi tentada.
-- Existe um `.wslconfig`, mas não foram identificados nos parâmetros consultados limites explícitos de memória, CPU ou swap.
-- Classificação: NEEDS CONFIGURATION. A confirmação real ficará para a M0-T03, ao iniciar o daemon do Docker.
+- WSL is installed and reports version 2.7.3, with the WSL2 kernel active.
+- The only reported distribution was `docker-desktop`, stopped, running as WSL2.
+- The hypervisor was detected as present, but the WMI query also returned firmware virtualization as disabled. The result is conflicting and may be a false negative.
+- The Windows optional-feature query could not be completed: DISM returned error 740 and required elevation. No elevation was attempted.
+- A `.wslconfig` exists, but no explicit memory, CPU or swap limits were identified among the queried parameters.
+- Classification: NEEDS CONFIGURATION. The actual confirmation will be performed in M0-T03 when the Docker daemon is started.
 
 ### Containers
 
-- Docker Desktop está instalado; Docker CLI 29.4.3 e Docker Compose v5.1.3 estão disponíveis.
-- Os contextos `default` e `desktop-linux` existem; o contexto Linux é o selecionado, mas o daemon não estava acessível e o processo do Docker Desktop não estava ativo durante a medição.
-- Imagens, containers e volumes existentes não puderam ser contados porque o daemon estava parado. Não foram listados nomes de projetos.
-- Não foi detectado Podman nem nerdctl.
-- O backend pretendido é Linux/WSL2. Windows Home não suporta containers Windows segundo a documentação do Docker.
-- A localização padrão documentada do disco virtual do Docker Desktop é no perfil local do usuário; a presença/uso efetivo não foi confirmada porque o daemon estava parado.
+- Docker Desktop is installed; Docker CLI 29.4.3 and Docker Compose v5.1.3 are available.
+- The `default` and `desktop-linux` contexts exist; the Linux context is selected, but the daemon was unreachable and the Docker Desktop process was not active during measurement.
+- Existing image, container and volume counts could not be verified because the daemon was stopped. Project names were not listed.
+- Podman and nerdctl were not detected.
+- The intended backend is Linux/WSL2. Windows Home does not support Windows containers according to Docker documentation.
+- Docker Desktop's documented default virtual-disk location is under the user's local profile; actual presence/use was not confirmed because the daemon was stopped.
 
-### Ferramentas
+### Tools
 
-- Git 2.53.0; identidade local/global está definida, sem expor nome ou e-mail.
-- `core.autocrlf` e `core.eol` não estão definidos.
-- GitHub CLI 2.90.0 está instalado e autenticado; nenhuma credencial foi registrada neste documento.
-- Java Temurin/OpenJDK 17.0.18 está disponível no PATH; `JAVA_HOME` não está definido.
-- Python 3.13.14 está disponível.
-- SQLcl, SQL*Plus, `lsnrctl`, Oracle Client, `ORACLE_HOME` e `TNS_ADMIN` não foram detectados.
-- VS Code e Notepad estão disponíveis.
-- `winget`, Chocolatey e Scoop não foram detectados pelos comandos de versão.
+- Git 2.53.0; local/global identity is defined without exposing the name or e-mail.
+- `core.autocrlf` and `core.eol` were not previously defined.
+- GitHub CLI 2.90.0 is installed and authenticated; no credential was recorded in this document.
+- Temurin/OpenJDK 17.0.18 is available on PATH; `JAVA_HOME` is not defined.
+- Python 3.13.14 is available.
+- SQLcl, SQL*Plus, `lsnrctl`, Oracle Client, `ORACLE_HOME` and `TNS_ADMIN` were not detected.
+- VS Code and Notepad are available.
+- `winget`, Chocolatey and Scoop were not detected by their version commands.
 
-### Rede e portas
+### Network and ports
 
-- As portas TCP 1521, 5500, 8080, 8181, 8443, 3000, 5432, 1433 e 9000 estavam livres.
-- Há listeners do Windows e de software instalado em outras portas, mas nenhum conflito nas portas-alvo foi encontrado.
-- Faixas excluídas observadas pelo Windows: 5357, 8883–8886 e 50000–50059. A consulta foi feita sem elevação; somente as faixas retornadas pelo sistema foram registradas.
-- Não foi detectado proxy no WinHTTP, nas configurações de proxy do usuário ou nas variáveis de ambiente consultadas.
-- Conectividade TCP/443 foi confirmada para `container-registry.oracle.com` e `github.com`.
+- TCP ports 1521, 5500, 8080, 8181, 8443, 3000, 5432, 1433 and 9000 were free.
+- Windows and installed-software listeners exist on other ports, but no conflict was found on the target ports.
+- Excluded ranges observed by Windows: 5357, 8883–8886 and 50000–50059. The query was performed without elevation; only ranges returned by the system were recorded.
+- No proxy was detected in WinHTTP, user proxy settings or the queried environment variables.
+- TCP/443 connectivity was confirmed for `container-registry.oracle.com` and `github.com`.
 
-## 2. Requisitos oficiais consultados
+## 2. Official requirements consulted
 
-Data de consulta: 2026-10-02.
+Consultation date: 2026-10-02.
 
 ### Oracle AI Database 26ai Free
 
-- A documentação oficial informa 1 GB de RAM mínimo, 2 GB recomendados e 10 GB de disco mínimo. Também recomenda pelo menos 2 GB de swap ou duas vezes a RAM, o que for menor.
-- A edição Free limita o processamento a 2 cores, a RAM do banco a 2 GB, os dados de usuário a 12 GB e a uma instalação por ambiente lógico. Um container conta como ambiente lógico.
-- O repositório oficial de imagens documenta a imagem Free 26ai e o uso de volume persistente em `/opt/oracle/oradata`; o listener usa a porta 1521 e a imagem expõe também o endpoint de administração indicado pela imagem.
-- A página oficial de downloads fornece o pull da imagem `container-registry.oracle.com/database/free:latest`. O uso de tag flutuante não é recomendado para o projeto; deve ser substituído por tag/digest fixo quando a M0-T03 for executada.
+- Official documentation states 1 GB minimum RAM, 2 GB recommended RAM and 10 GB minimum disk space. It also recommends at least 2 GB swap or twice the RAM, whichever is less.
+- The Free edition limits processing to 2 cores, database RAM to 2 GB, user data to 12 GB and one installation per logical environment. A container counts as a logical environment.
+- The official image repository documents the Free 26ai image and persistent storage at `/opt/oracle/oradata`; the listener uses port 1521 and the image also exposes the administration endpoint documented by the image.
+- The official download page provides the pull command for `container-registry.oracle.com/database/free:latest`. A floating tag is not recommended for this project; it must be replaced with a fixed tag/digest in M0-T03.
 
-Fontes:
+Sources:
 
-- [Oracle AI Database Free — requisitos](https://docs.oracle.com/en/database/oracle/oracle-database/26/xeinl/requirements.html)
-- [Oracle AI Database Free — limitações](https://docs.oracle.com/en/database/oracle/oracle-database/26/xeinw/licensing-restrictions.html)
-- [Oracle AI Database — informações de licenciamento](https://docs.oracle.com/en/database/oracle/oracle-database/26/dblic/Licensing-Information.html)
+- [Oracle AI Database Free — requirements](https://docs.oracle.com/en/database/oracle/oracle-database/26/xeinl/requirements.html)
+- [Oracle AI Database Free — limitations](https://docs.oracle.com/en/database/oracle/oracle-database/26/xeinw/licensing-restrictions.html)
+- [Oracle AI Database — licensing information](https://docs.oracle.com/en/database/oracle/oracle-database/26/dblic/Licensing-Information.html)
 - [Oracle Docker Images — Single Instance](https://github.com/oracle/docker-images/blob/main/OracleDatabase/SingleInstance/README.md)
-- [Oracle Database — downloads oficiais](https://www.oracle.com/database/technologies/oracle-database-software-downloads.html)
+- [Oracle Database — official downloads](https://www.oracle.com/database/technologies/oracle-database-software-downloads.html)
 
-### Registry Oracle
+### Oracle registry
 
-- A documentação oficial do Oracle Container Registry informa que imagens Oracle licenciadas exigem conta Oracle, aceite dos termos no repositório e autenticação do cliente com `docker login` ou equivalente.
-- A edição Database Free possui os Oracle Free Use Terms; porém a aceitação efetiva do repositório `database/free` não foi testada, pois esta task proíbe login e pull. Deve ser verificada na M0-T03 antes do download.
+- Official Oracle Container Registry documentation states that licensed Oracle images require an Oracle account, acceptance of the repository terms and client authentication with `docker login` or an equivalent.
+- Database Free is covered by the Oracle Free Use Terms; however, effective acceptance for the `database/free` repository was not tested because this task prohibits login and pull. It must be verified in M0-T03 before downloading.
 
-Fonte: [Oracle Container Registry — pulling images](https://docs.oracle.com/en/operating-systems/oracle-linux/docker/docker-UsingDockerRegistries.html).
+Source: [Oracle Container Registry — pulling images](https://docs.oracle.com/en/operating-systems/oracle-linux/docker/docker-UsingDockerRegistries.html).
 
-### APEX e ORDS
+### APEX and ORDS
 
-- APEX não está incluído na edição Free; deve ser baixado e instalado separadamente.
-- APEX 26.1 requer ORDS 26.1.1 ou posterior. A documentação recomenda instalar ORDS antes do APEX em novas instalações.
-- ORDS é separado do banco: pode ser obtido por ZIP/RPM ou por imagem própria no Oracle Container Registry. A imagem de ORDS inclui GraalVM e uma distribuição de produção do ORDS.
-- Para APEX com ORDS é necessário instalar o ZIP do APEX, disponibilizar os recursos estáticos e configurar o PL/SQL Gateway. O ZIP do APEX e seus checksums não pertencem ao repositório Git público.
+- APEX is not included with the Free edition; it must be downloaded and installed separately.
+- APEX 26.1 requires ORDS 26.1.1 or later. The documentation recommends installing ORDS before APEX for new installations.
+- ORDS is separate from the database: it can be obtained as a ZIP/RPM or as its own Oracle Container Registry image. The ORDS image includes GraalVM and an ORDS production distribution.
+- For APEX with ORDS, the APEX ZIP must be installed, static resources made available and the PL/SQL Gateway configured. The APEX ZIP and its checksums do not belong in the public Git repository.
 
-Fontes:
+Sources:
 
-- [Oracle AI Database Free — componentes não incluídos](https://docs.oracle.com/en/database/oracle/oracle-database/26/dblic/Licensing-Information.html)
-- [APEX 26.1 — requisitos](https://docs.oracle.com/en/database/oracle/apex/26.1/htmig/apex-installation-requirements.html)
-- [ORDS 26.1 — instalação e configuração](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/26.1/ordig/installing-and-configuring-oracle-rest-data-services.html)
-- [APEX — instalação de APEX e ORDS](https://docs.oracle.com/en/database/oracle/apex/26.1/htmig/installing-and-configuring-apex-and-ords.html)
+- [Oracle AI Database Free — excluded components](https://docs.oracle.com/en/database/oracle/oracle-database/26/dblic/Licensing-Information.html)
+- [APEX 26.1 — requirements](https://docs.oracle.com/en/database/oracle/apex/26.1/htmig/apex-installation-requirements.html)
+- [ORDS 26.1 — installation and configuration](https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/26.1/ordig/installing-and-configuring-oracle-rest-data-services.html)
+- [APEX — installing APEX and ORDS](https://docs.oracle.com/en/database/oracle/apex/26.1/htmig/installing-and-configuring-apex-and-ords.html)
 
-### Docker Desktop e WSL2
+### Docker Desktop and WSL2
 
-- O Docker documenta WSL 2.1.5 ou posterior, 8 GB de RAM de sistema e virtualização de hardware habilitada como pré-requisitos do backend WSL2.
-- Windows Home permite somente containers Linux.
-- Para desempenho de bind mounts, o Docker recomenda manter arquivos montados em containers Linux no filesystem Linux. Para o banco, a regra desta task é mais restritiva: usar volume nomeado do Docker e nunca bind mount para pasta Windows.
+- Docker documents WSL 2.1.5 or later, 8 GB system RAM and hardware virtualization enabled as prerequisites for the WSL2 backend.
+- Windows Home supports Linux containers only.
+- For bind-mount performance, Docker recommends keeping files mounted into Linux containers in the Linux filesystem. For the database, this task has a stricter rule: use a named Docker volume and never bind-mount a Windows folder.
 
-Fontes:
+Sources:
 
-- [Docker Desktop no Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
-- [Docker Desktop com backend WSL2](https://docs.docker.com/desktop/features/wsl/)
-- [Docker — boas práticas WSL2 e bind mounts](https://docs.docker.com/desktop/features/wsl/best-practices/)
+- [Docker Desktop on Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
+- [Docker Desktop with the WSL2 backend](https://docs.docker.com/desktop/features/wsl/)
+- [Docker — WSL2 and bind-mount best practices](https://docs.docker.com/desktop/features/wsl/best-practices/)
 
 ### SQLcl
 
-- A documentação atual do SQLcl informa Java 17 ou 21; o Java 17 existente é compatível.
-- SQLcl é distribuído separadamente como ZIP e ainda não existe no ambiente local.
+- Current SQLcl documentation states Java 17 or 21; the existing Java 17 is compatible.
+- SQLcl is distributed separately as a ZIP and is not installed locally.
 
-Fonte: [Oracle SQLcl — download e instalação](https://docs.oracle.com/en/database/oracle/apex/26.1/aeadm/downloading-and-installing-sqlcl.html).
+Source: [Oracle SQLcl — download and installation](https://docs.oracle.com/en/database/oracle/apex/26.1/aeadm/downloading-and-installing-sqlcl.html).
 
-## 3. Classificação da Fase 5
+## 3. Phase 5 classification
 
-| Requisito | Classificação | Motivo e ação sugerida |
+| Requirement | Classification | Reason and suggested action |
 |---|---|---|
-| Oracle AI Database 26ai Free | NEEDS CONFIGURATION | CPU, disco e RAM total são suficientes nominalmente, mas há só 2,6 GB livres, o daemon está parado e a virtualização precisa ser confirmada na M0-T03; medir o conjunto Docker/WSL2/Oracle antes de prosseguir. |
-| Oracle APEX | NEEDS INSTALLATION | APEX é separado da Free e não está instalado; escolher ZIP versionado, checksum fixo e cache fora do Git. |
-| ORDS | NEEDS INSTALLATION | Não está instalado; instalar uma versão compatível com APEX 26.1, no mínimo 26.1.1, preferencialmente fixada por versão/digest. |
-| Runtime de containers + Compose | NEEDS CONFIGURATION | Docker Desktop e Compose estão instalados, mas o daemon não está ativo; confirmar backend Linux/WSL2 e limites na M0-T03. |
-| SQLcl + Java compatível | NEEDS INSTALLATION | Java 17 está compatível, mas SQLcl não existe; instalar versão fixada quando autorizado. |
-| PL/SQL | NEEDS CONFIGURATION | Não há Oracle local; PL/SQL será executado no Oracle container via SQLcl, com edição em arquivos SQL/PLSQL e editor local. |
-| utPLSQL | NEEDS INSTALLATION | Não foi detectado; instalar posteriormente no banco a partir de release fixada, conforme task própria. |
-| Migrations | NEEDS DECISION | Ainda não foi decidido entre Liquibase via SQLcl e SQL numerado com runner simples; preservar ambas como experimento da M0. |
-| Git e GitHub CLI | READY | Git, identidade e GitHub CLI autenticado estão disponíveis; aplicar `.gitattributes` na M0-T02 para fixar finais de linha. |
-| CI — GitHub Actions | READY | Não exige runner local; GitHub CLI autenticado e Java/Python disponíveis, mas a ativação depende do repositório remoto e de task futura. |
-| Linguagem de scripts de dev | NEEDS DECISION | PowerShell 7 e Bash estão disponíveis; recomendação: PowerShell para orquestração local Windows e Bash para compatibilidade com CI Linux, sem decidir nesta task. |
+| Oracle AI Database 26ai Free | NEEDS CONFIGURATION | CPU, disk and total RAM are nominally sufficient, but only 2.6 GB was free, the daemon is stopped and virtualization must be confirmed in M0-T03; measure the Docker/WSL2/Oracle stack before proceeding. |
+| Oracle APEX | NEEDS INSTALLATION | APEX is separate from Free and is not installed; choose a versioned ZIP, fixed checksum and cache outside Git. |
+| ORDS | NEEDS INSTALLATION | It is not installed; install a version compatible with APEX 26.1, at least 26.1.1, preferably fixed by version/digest. |
+| Container runtime + Compose | NEEDS CONFIGURATION | Docker Desktop and Compose are installed, but the daemon is not active; confirm the Linux/WSL2 backend and limits in M0-T03. |
+| SQLcl + compatible Java | NEEDS INSTALLATION | Java 17 is compatible, but SQLcl is absent; install a fixed version when authorized. |
+| PL/SQL | NEEDS CONFIGURATION | No local Oracle installation exists; PL/SQL will run in the Oracle container through SQLcl, with SQL/PLSQL files edited locally. |
+| utPLSQL | NEEDS INSTALLATION | It was not detected; install it later in the database from a fixed release, in its own task. |
+| Migrations | NEEDS DECISION | Liquibase through SQLcl versus numbered SQL with a simple runner is not decided; preserve both for the M0 experiment. |
+| Git and GitHub CLI | READY | Git, identity and authenticated GitHub CLI are available; apply `.gitattributes` in M0-T02 to make line endings explicit. |
+| CI — GitHub Actions | READY | No local runner is required; GitHub CLI is authenticated and Java/Python are available, but activation depends on the remote repository and a future task. |
+| Developer scripting language | NEEDS DECISION | PowerShell 7 and Bash are available; recommendation: PowerShell for local Windows orchestration and Bash for CI Linux compatibility, without deciding in this task. |
 
-## 4. Riscos, conflitos e questões em aberto
+## 4. Risks, conflicts and open questions
 
-- **RAM:** 2,6 GB livres na medição, contra a necessidade combinada do Oracle Free, ORDS e VM WSL2. A capacidade nominal da máquina não garante margem operacional; medir o pico real na M0-T03.
-- **Virtualização:** a flag do firmware retornou resultado conflitante com hypervisor ativo e WSL2 instalado. Tratar como NEEDS CONFIGURATION e confirmar ao subir o daemon, sem alterar firmware nesta task.
-- **APEX:** não vem com a Free e não pode ser commitado. O setup futuro deve baixar ZIP com versão e checksum fixos para cache ignorado pelo Git.
-- **Compatibilidade:** APEX 26.1 exige ORDS 26.1.1 ou superior.
-- **Limite de dados:** permanece em aberto se o schema/objetos internos do APEX contam, na prática, contra o limite de 12 GB de dados de usuário da Free; medir e documentar na instalação.
-- **Finais de linha:** `core.autocrlf` não está definido; criar política explícita em `.gitattributes` na M0-T02.
-- **Persistência:** na M0-T03, dados do banco devem usar volume nomeado do Docker, nunca bind mount para pasta do Windows.
-- **Portas:** nenhuma porta-alvo está ocupada; as faixas excluídas pelo Windows devem ser consideradas ao escolher portas alternativas.
-- **Caminho:** o caminho confirmado é curto, local, NTFS, sem espaços/caracteres não ASCII e com SSD; não há conflito conhecido. Bind mounts de código Windows em containers Linux podem ter desempenho inferior, conforme Docker; isso não se aplica ao volume nomeado do banco.
-- **Registry/rede:** conectividade foi confirmada, mas login, aceite de termos e pull não foram testados por restrição da task.
+- **RAM:** 2.6 GB was free during measurement, against the combined needs of Oracle Free, ORDS and the WSL2 VM. Nominal machine capacity does not guarantee operating margin; measure peak usage in M0-T03.
+- **Virtualization:** the firmware flag returned a result conflicting with an active hypervisor and installed WSL2. Treat it as NEEDS CONFIGURATION and confirm by starting the daemon, without changing firmware in this task.
+- **APEX:** it is not bundled with Free and must not be committed. Future setup must download a ZIP with a fixed version and checksum into a Git-ignored cache.
+- **Compatibility:** APEX 26.1 requires ORDS 26.1.1 or later.
+- **Data limit:** it remains open whether APEX's internal schema/objects count in practice against Free's 12 GB user-data limit; measure and document this during installation.
+- **Line endings:** `core.autocrlf` was not defined; create an explicit policy in `.gitattributes` in M0-T02.
+- **Persistence:** in M0-T03, database data must use a named Docker volume, never a bind mount to a Windows folder.
+- **Ports:** no target port is occupied; Windows excluded ranges must be considered when choosing alternatives.
+- **Path:** the confirmed path is short, local, NTFS, without spaces/non-ASCII characters and on an SSD; no known conflict exists. Windows-to-Linux bind mounts can have lower performance, as documented by Docker; this does not apply to the named database volume.
+- **Registry/network:** connectivity was confirmed, but login, terms acceptance and pull were not tested due to task restrictions.
 
-Questões que afetam arquitetura:
+Questions affecting architecture:
 
-1. Migrations: Liquibase via SQLcl oferece ferramenta declarativa, mas adiciona dependência e complexidade; SQL numerado com runner simples reduz dependências, mas exige convenções e controle próprios. A decisão fica para o experimento da M0.
-2. APEX/ORDS: usar containers separados ou uma composição controlada é compatível com a documentação; a escolha final deve considerar memória, atualização e persistência sem embutir binários no repositório.
-3. Imagem Oracle: usar tag flutuante simplifica atualização, enquanto tag/digest fixo melhora reprodutibilidade; recomenda-se fixar para o projeto público.
+1. Migrations: Liquibase through SQLcl provides a declarative tool but adds dependency and complexity; numbered SQL with a simple runner reduces dependencies but requires project conventions and control. The decision belongs to the M0 experiment.
+2. APEX/ORDS: separate containers or a controlled composition are compatible with the documentation; the final choice should consider memory, upgrades and persistence without embedding binaries in the repository.
+3. Oracle image: a floating tag simplifies updates, while a fixed tag/digest improves reproducibility; fixing it is recommended for the public project.
 
-## 5. Recomendações
+## 5. Recommendations
 
-- Na M0-T03, iniciar o Docker Desktop somente quando autorizado, confirmar virtualização pelo funcionamento do daemon e medir memória livre antes/depois de cada serviço.
-- Fixar versão/digest da imagem Oracle, ORDS e APEX; registrar checksums e manter downloads em cache ignorado pelo Git.
-- Usar volume nomeado para `/opt/oracle/oradata`; não armazenar dados do banco em bind mount Windows.
-- Adicionar `.gitattributes` na M0-T02 para tornar finais de linha determinísticos.
-- Recomendar PowerShell 7 para automação local no Windows e Bash para scripts executados no CI Linux; deixar a decisão formal para o arquiteto.
+- In M0-T03, start Docker Desktop only when authorized, confirm virtualization through daemon operation and measure free memory before and after each service.
+- Fix the Oracle image, ORDS and APEX versions/digests; record checksums and keep downloads in a Git-ignored cache.
+- Use a named volume for `/opt/oracle/oradata`; do not store database data in a Windows bind mount.
+- Use `.gitattributes` to make line endings deterministic.
+- Recommend PowerShell 7 for local Windows automation and Bash for scripts executed in Linux CI; leave the formal decision to the architect.
 
-## 6. Validação desta task
+## 6. Validation for M0-T01
 
-- Nenhum software, feature do SO, imagem ou container foi instalado, criado, baixado ou iniciado.
-- Nenhuma configuração do sistema, PATH, variável de ambiente, registro ou Docker foi alterada.
-- O documento foi revisado para não conter nome de usuário do SO, hostname, e-mail, IP, número de série, token, valor de variável de ambiente, PATH pessoal ou nome de outro projeto.
-- O único artefato de trabalho é este documento, além dos metadados normais do Git necessários para o commit.
+- No software, OS feature, image or container was installed, created, downloaded or started.
+- No system configuration, PATH, environment variable, registry or Docker setting was changed.
+- The document was reviewed to avoid containing an OS username, hostname, e-mail, IP, serial number, token, environment-variable value, personal PATH or another project name.
+- The only work artifact is this document, apart from normal Git metadata required for the commit.
+
+## Resolved in M0-T02
+
+- Line endings are normalized through `.gitattributes`; this repository uses local `core.autocrlf=false` and `core.eol=lf` settings.
+- Repository language: English.
+- Developer scripting language: PowerShell 7 (`pwsh`), as decided by the architect.
