@@ -1,0 +1,53 @@
+# Environment files and local secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+
+# Local caches, temporary files, logs and database exports
+.cache/
+tmp/
+logs/
+*.log
+dumps/
+backups/
+*.dmp
+*.dump
+*.bak
+*.backup
+*.sql.gz
+
+# Downloaded installers and Oracle artifacts
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.iso
+*.bin
+*.msi
+*.exe
+*.jar
+
+# IDE and editor state
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*.swo
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Common generated directories
+__pycache__/
+node_modules/
